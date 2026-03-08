@@ -1,15 +1,30 @@
-const db = require("../config/db");
+const customerModel = require("../models/customerModel");
 
-exports.createCustomer = (data, callback) => {
-
-    const sql = "INSERT INTO customers (name,email,phone) VALUES (?,?,?)";
-
-    db.query(sql, [data.name, data.email, data.phone], callback);
+exports.createCustomer = (req, res) => {
+    customerModel.createCustomer(req.body, (err, result) => {
+        if (err) {
+            return res.status(500).json(err);
+        }
+        res.json({
+            message: "Customer created",
+            id: result.insertId
+        });
+    });
 };
 
-exports.getCustomers = (callback) => {
+exports.getCustomers = (req, res) => {
 
-    const sql = "SELECT * FROM customers";
+    console.log("API called");
 
-    db.query(sql, callback);
+    customerModel.getCustomers((err, result) => {
+
+        console.log("Query finished");
+
+        if (err) {
+            return res.status(500).json(err);
+        }
+
+        res.json(result);
+
+    });
 };
